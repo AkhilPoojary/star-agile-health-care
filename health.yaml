@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: health-care-deployment
+  labels:
+    app: health-care
+spec:
+  replicas: 4 
+  selector:
+    matchLabels:
+      app: health-care
+  template:
+    metadata:
+      labels:
+        app: health-care
+    spec:
+      containers:
+        - name: health-care-container
+          image: akhilsru3/health-care:3.0   
+          ports:
+            - containerPort: 8081           
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: dev
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: health-care-service
+spec:
+  type: NodePort
+  selector:
+    app: health-care
+  ports:
+    - protocol: TCP
+      port: 8080            
+      targetPort: 8081      
+      nodePort: 30085      
